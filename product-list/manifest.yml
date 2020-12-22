@@ -1,0 +1,29 @@
+applications:
+# Product List Application
+- name: product-list
+  instances: 1
+  memory: 128M
+  routes:
+    - route: product-list-mn47.cfapps.eu10.hana.ondemand.com
+  path: myapp
+  buildpacks:
+    - nodejs_buildpack 
+  timeout: 180
+  services:
+    - xsuaa-service-tutorial   
+- name: approuter
+  routes:
+    - route: approuter-product-list-mn47.cfapps.eu10.hana.ondemand.com
+  path: approuter
+  buildpacks:
+    - nodejs_buildpack
+  memory: 128M
+  services:
+    - xsuaa-service-tutorial
+  env:
+    destinations: >
+      [
+        {"name": "products-destination",
+        "url": "https://product-list-mn47.cfapps.eu10.hana.ondemand.com",
+        "forwardAuthToken": true}
+      ]
